@@ -1,4 +1,39 @@
 [
+        {
+        "id": "tea",
+        "name": "Lightning Tea",
+        "description": "Premium Roiboos tea, paid instantly over Lightning",
+        "price": 3000,
+        "emoji": "&#9749;"
+    },
+    {
+        "id": "trousers",
+        "name": "Bitcoin Trouers",
+        "description": "High-quality Fasionable Bitcoin and Lightning trousers",
+        "price": 8000,
+        "emoji": "&#127912;"
+    },
+    {
+        "id": "magwinya",
+        "name": "Lightning Magwinya",
+        "description": "Fresh, hot fatcakes - instant delivery after payment",
+        "price": 500,
+        "emoji": "&#128214;"
+    },
+    {
+        "id": "hat",
+        "name": "Bucket Hat",
+        "description": "Orange bucket hat with Lightning bolt design",
+        "price": 10000,
+        "emoji": "&#128085;"
+    },
+    {
+        "id": "tv",
+        "name": "Hisense Smart TV",
+        "description": "89 inch TV with Bitcoin content",
+        "price": 1000000,
+        "emoji": "&#127891;"
+    },
     {
         "id": "coffee",
         "name": "Lightning Coffee",
