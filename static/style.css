@@ -186,6 +186,24 @@ main {
     font-size: 0.9em;
 }
 
+.expiry-timer {
+    background-color: #1e1e1e;
+    border: 1px solid #333;
+    border-radius: 6px;
+    padding: 12px 20px;
+    margin: 15px 0;
+    font-size: 1em;
+    color: #ffeb3b;
+    transition: color 0.3s;
+}
+
+.expiry-timer #countdown {
+    font-weight: bold;
+    font-family: 'Consolas', 'Monaco', monospace;
+    font-size: 1.2em;
+    color: #ff9800;
+}
+
 .payment-status {
     padding: 15px;
     border-radius: 6px;
@@ -203,6 +221,12 @@ main {
     background-color: #1b3a1b;
     border: 1px solid #4ec9b0;
     color: #4ec9b0;
+}
+
+.status-expired {
+    background-color: #3a1b1b;
+    border: 1px solid #d16969;
+    color: #d16969;
 }
 
 .spinner {

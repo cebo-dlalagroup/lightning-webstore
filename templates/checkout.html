@@ -13,6 +13,10 @@
         {{ payment_request }}
     </div>
 
+    <div class="expiry-timer" id="expiry-timer">
+        ⏱️ Invoice expires in: <span id="countdown">10:00</span>
+    </div>
+
     <div class="payment-status status-waiting" id="payment-status">
         <span class="spinner"></span>
         Waiting for payment...
@@ -37,7 +41,35 @@
 <script>
     const rHash = "{{ r_hash }}";
     const productId = "{{ product.id }}";
+    const expiryTime = {{ expiry_time }};
     let polling = true;
+    let countdownInterval;
+
+    function updateCountdown() {
+        const now = Math.floor(Date.now() / 1000);
+        const remaining = expiryTime - now;
+        
+        if (remaining <= 0) {
+            clearInterval(countdownInterval);
+            polling = false;
+            document.getElementById('countdown').textContent = 'EXPIRED';
+            document.getElementById('expiry-timer').style.color = '#d16969';
+            const status = document.getElementById('payment-status');
+            status.className = 'payment-status status-expired';
+            status.innerHTML = '⚠️ Invoice expired';
+            return;
+        }
+        
+        const minutes = Math.floor(remaining / 60);
+        const seconds = remaining % 60;
+        const timeStr = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+        document.getElementById('countdown').textContent = timeStr;
+        
+        // Warning when less than 1 minute
+        if (remaining < 60) {
+            document.getElementById('expiry-timer').style.color = '#f48771';
+        }
+    }
 
     function copyInvoice() {
         const text = document.getElementById('invoice-text').innerText;
@@ -73,6 +105,10 @@
             });
     }
 
+    // Start countdown timer
+    updateCountdown();
+    countdownInterval = setInterval(updateCountdown, 1000);
+    
     // Start polling for payment
     checkPayment();
 </script>
