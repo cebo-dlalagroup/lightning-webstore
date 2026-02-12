@@ -11,28 +11,28 @@
         "name": "Bitcoin Trouers",
         "description": "High-quality Fasionable Bitcoin and Lightning trousers",
         "price": 8000,
-        "emoji": "&#127912;"
+        "emoji": "&#128086;"
     },
     {
         "id": "magwinya",
         "name": "Lightning Magwinya",
         "description": "Fresh, hot fatcakes - instant delivery after payment",
         "price": 500,
-        "emoji": "&#128214;"
+        "emoji": "&#127849;"
     },
     {
         "id": "hat",
         "name": "Bucket Hat",
         "description": "Orange bucket hat with Lightning bolt design",
         "price": 10000,
-        "emoji": "&#128085;"
+        "emoji": "&#129506;"
     },
     {
         "id": "tv",
         "name": "Hisense Smart TV",
         "description": "89 inch TV with Bitcoin content",
         "price": 1000000,
-        "emoji": "&#127891;"
+        "emoji": "&#128250;"
     },
     {
         "id": "coffee",
@@ -46,7 +46,7 @@
         "name": "Bitcoin Sticker Pack",
         "description": "5 high-quality Bitcoin and Lightning stickers",
         "price": 2000,
-        "emoji": "&#127912;"
+        "emoji": "&#127991;"
     },
     {
         "id": "ebook",

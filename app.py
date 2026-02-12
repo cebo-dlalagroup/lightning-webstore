@@ -8,6 +8,7 @@ import json
 import os
 import io
 import base64
+import time
 
 import qrcode
 from flask import Flask, render_template, jsonify, request
@@ -76,12 +77,17 @@ def checkout(product_id):
         return "Product not found", 404
 
     try:
-        # Create a Lightning invoice via LND
+        # Create a Lightning invoice via LND (10 minute expiry)
         memo = f"Webstore: {product['name']}"
-        result = lnd.add_invoice(amount=product["price"], memo=memo)
+        expiry_seconds = 600  # 10 minutes
+        result = lnd.add_invoice(amount=product["price"], memo=memo, expiry=expiry_seconds)
 
         payment_request = result["payment_request"]
         r_hash = result["r_hash"]
+        
+        # Calculate expiry timestamp
+        creation_time = int(time.time())
+        expiry_time = creation_time + expiry_seconds
 
         # Generate QR code
         qr_base64 = generate_qr_base64(payment_request.upper())
@@ -92,6 +98,7 @@ def checkout(product_id):
             payment_request=payment_request,
             r_hash=r_hash,
             qr_base64=qr_base64,
+            expiry_time=expiry_time,
         )
     except Exception as e:
         return render_template(
@@ -119,6 +126,45 @@ def success(product_id):
     if not product:
         return "Product not found", 404
     return render_template("success.html", product=product)
+
+
+@app.route("/dashboard")
+def dashboard():
+    """Display sales dashboard with revenue and order statistics."""
+    try:
+        # Get all invoices from LND
+        invoices_data = lnd.list_invoices()
+        all_invoices = invoices_data.get("invoices", [])
+        
+        # Filter for settled (paid) invoices
+        settled_invoices = [inv for inv in all_invoices if inv.get("settled", False)]
+        
+        # Calculate statistics
+        total_revenue = sum(int(inv.get("value", 0)) for inv in settled_invoices)
+        total_orders = len(settled_invoices)
+        
+        # Get recent orders with details
+        recent_orders = []
+        for inv in sorted(settled_invoices, key=lambda x: int(x.get("settle_date", 0)), reverse=True)[:10]:
+            order = {
+                "memo": inv.get("memo", "Unknown"),
+                "amount": int(inv.get("value", 0)),
+                "date": inv.get("settle_date", "0"),
+            }
+            recent_orders.append(order)
+        
+        return render_template(
+            "dashboard.html",
+            total_revenue=total_revenue,
+            total_orders=total_orders,
+            recent_orders=recent_orders,
+        )
+    except Exception as e:
+        return render_template(
+            "error.html",
+            error=str(e),
+            product=None,
+        )
 
 
 @app.route("/api/node_info")

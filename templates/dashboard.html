@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div class="dashboard-header">
+        <h2>📊 Sales Dashboard</h2>
+        <a href="/" class="btn btn-back">Back to Store</a>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card stat-revenue">
+            <div class="stat-icon">💰</div>
+            <div class="stat-label">Total Revenue</div>
+            <div class="stat-value">{{ "{:,}".format(total_revenue) }} <span class="unit">sats</span></div>
+        </div>
+
+        <div class="stat-card stat-orders">
+            <div class="stat-icon">📦</div>
+            <div class="stat-label">Completed Orders</div>
+            <div class="stat-value">{{ total_orders }}</div>
+        </div>
+    </div>
+
+    {% if recent_orders %}
+    <div class="recent-orders">
+        <h3>Recent Orders</h3>
+        <div class="orders-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Amount</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in recent_orders %}
+                    <tr>
+                        <td class="order-memo">{{ order.memo }}</td>
+                        <td class="order-amount">{{ "{:,}".format(order.amount) }} sats</td>
+                        <td class="order-date">{{ order.date }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% else %}
+    <div class="no-orders">
+        <p>No completed orders yet. Start selling!</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Format Unix timestamps to readable dates
+    document.addEventListener('DOMContentLoaded', function() {
+        const dates = document.querySelectorAll('.order-date');
+        dates.forEach(function(el) {
+            const timestamp = parseInt(el.textContent);
+            if (timestamp > 0) {
+                const date = new Date(timestamp * 1000);
+                el.textContent = date.toLocaleString();
+            } else {
+                el.textContent = 'Unknown';
+            }
+        });
+    });
+</script>
+{% endblock %}
