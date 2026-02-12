@@ -128,6 +128,45 @@ def success(product_id):
     return render_template("success.html", product=product)
 
 
+@app.route("/dashboard")
+def dashboard():
+    """Display sales dashboard with revenue and order statistics."""
+    try:
+        # Get all invoices from LND
+        invoices_data = lnd.list_invoices()
+        all_invoices = invoices_data.get("invoices", [])
+        
+        # Filter for settled (paid) invoices
+        settled_invoices = [inv for inv in all_invoices if inv.get("settled", False)]
+        
+        # Calculate statistics
+        total_revenue = sum(int(inv.get("value", 0)) for inv in settled_invoices)
+        total_orders = len(settled_invoices)
+        
+        # Get recent orders with details
+        recent_orders = []
+        for inv in sorted(settled_invoices, key=lambda x: int(x.get("settle_date", 0)), reverse=True)[:10]:
+            order = {
+                "memo": inv.get("memo", "Unknown"),
+                "amount": int(inv.get("value", 0)),
+                "date": inv.get("settle_date", "0"),
+            }
+            recent_orders.append(order)
+        
+        return render_template(
+            "dashboard.html",
+            total_revenue=total_revenue,
+            total_orders=total_orders,
+            recent_orders=recent_orders,
+        )
+    except Exception as e:
+        return render_template(
+            "error.html",
+            error=str(e),
+            product=None,
+        )
+
+
 @app.route("/api/node_info")
 def node_info():
     """API endpoint to get LND node information."""
